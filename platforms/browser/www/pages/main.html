@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#2196f3">
+    <title>My App</title>
+    <!-- Path to Framework7 Library Bundle CSS -->
+    <link rel="stylesheet" href="../lib/framework7/css/framework7.bundle.min.css">
+    <!-- mapbox links -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/index.css">
+  </head>
+  <body>
+    <!-- App root element -->
+    <div id="mainapp">
+        <!-- notification menu -->
+        <div id="notification-context-menu">
+            <div id="notification-transperent-body">.</div>
+            <div class="notification-item" id="notification-ccontent-id-1">               
+              <span class="notification-timestamp">
+                <b style="color: gray;">May 6 2020 16:28:30 PM &nbsp;&nbsp;<span class="badge color-red">New</span></b>
+              </span>
+              <div class="notification-body">
+                <h5>You have new incoming complaint!!</h5>
+              </div>
+            </div>
+            <div class="notification-item" id="notification-ccontent-id-2">
+                <span class="notification-timestamp">
+                  <b style="color: gray;">May 6 2020 16:28:30 PM</b>
+                </span>
+                <div class="notification-body">
+                  <h5>You accepted the complaint successfully!!</h5>
+                </div>
+              </div>
+        </div>
+        <div id="loading-main-page-gif">
+          <p>Hang On...</p>
+          <img src="../img/icons/spinner.gif" alt="">
+        </div>
+        <div id="loading-gif">
+          <img src="../img/icons/spinner.gif" alt="wait..">
+        </div>
+        <div class="page">
+            <div class="navbar">
+              <div class="navbar-bg"></div>
+              <div class="navbar-inner sliding">
+                <div class="title" id="s-navbar-title"></div>
+                <div class="notification-center" style="margin-right: 15px;">
+                  <span class="badge color-green">5</span>
+                  <img src="../img/icons/notification.png" width="26px" height="26px" id="notification-menu-btn" alt="Notification">
+                </div>
+              </div>
+            </div>
+            <!-- Additional "tabbar" class -->
+            <div class="toolbar tabbar toolbar-top">
+              <div class="toolbar-inner">
+                <a onclick="navbarNameChanger('Send New Complaint')" href="#send-complaint-tab" class="tab-link tab-link-active">
+                  <img src="../img/icons/send.png" alt="">
+                </a>
+                <a onclick="navbarNameChanger('Working Complaint')" href="#working-complaint-tab" class="tab-link">
+                  <img src="../img/icons/working.png" alt="">
+                </a>
+                <a onclick="navbarNameChanger('All Complaints')" href="#all-complaints-tab" class="tab-link">
+                  <img src="../img/icons/all.png" alt="">
+                </a>
+                <a onclick="navbarNameChanger('Help/FAQ')" href="#help-faq-tab" class="tab-link">
+                  <img src="../img/icons/help_faq.png" alt="">
+                </a>
+                <a onclick="navbarNameChanger('About')" href="#about-tab" class="tab-link">
+                  <img src="../img/icons/about.png" alt="">
+                </a>
+              </div>
+            </div>
+            <!-- Tabs -->
+            <div class="tabs">
+              <!-- send complaint tab, active -->
+              <div class="page-content tab tab-active" id="send-complaint-tab">
+                <div class="block">
+                    <div id="send-complaint-content">
+
+                      <!-- form to send complaint -->
+                      <div class="block-title" style="margin: 0;"></div>
+                        <div class="list no-hairlines-md">
+                          <ul>
+                            <li class="item-content item-input">
+                              <div class="item-media">
+                                <img src="../img/icons/areaname.png" alt="">    
+                              </div>
+                              <div class="item-inner">
+                                <div class="item-title item-label" style="font-weight: bold;">Description:</div>
+                                <div class="item-input-wrap">
+                                  <textarea name="description" id="complaintdescription" style="height: 50px;" cols="30" rows="2" placeholder="Tell us little bit about the area..."></textarea>
+                                  <span class="input-clear-button"></span>
+                                </div>
+                              </div>
+                            </li>
+                            <hr>
+                            <li class="item-content item-input">
+                                <div class="item-media">
+                                  <img src="../img/icons/zone.png" alt="">    
+                                </div>
+                                <div class="item-inner" style="padding-bottom: 0;">
+                                <div class="item-title item-label" style="font-weight: bold;">Select Zone :(Near by)</div>                                  
+                                  <div class="item-input-wrap">
+                                    <div class="item-content item-input" style="padding: 0;">
+                                      <div class="item-inner" style="padding: 0;">
+                                        <div class="item-input-wrap">
+                                          <input type="text" placeholder="Click To Select Your Zone " readonly="readonly" id="zone-picker"/>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </li>
+                            <hr>
+                            <li class="item-content item-input">
+                                <div class="item-media">
+                                  <img src="../img/icons/areaimage.png" alt="">    
+                                </div>
+                                <div class="item-inner">
+                                  <div class="item-title item-label" style="padding-bottom: 3px;font-weight: bold;">Area Image</div>
+                                  <div class="item-input-wrap" style="display: flex">
+                                    <button class="col button button-fill" id="open-camera-button" style="background: lightgray;color: #595959;" onclick="openCamera()">Open Camera</button>
+                                    <a href="#" class="col button button-fill pb-standalone-captions" id="preview-image-button" style="width: 50%;display: none;">Preview Image</a>
+                                  </div>
+                                </div>
+                            </li>
+                            <hr>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-title item-label" style="padding-bottom: 5px;font-weight: bold;">Select exact location(click to select)</div>
+                                  <small id="address-show-area" style="padding: 10px;display: none;background: #4cd96475;margin-bottom: 3%;border-radius: 5px;"><b>Address : </b><span id="selected-address"></span></small>
+                                  <div class="item-input-wrap">
+                                    <div id="location-map"></div>
+                                  </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                      <button class="col button button-fill" style="width: 70%;margin: auto;float: right;margin-top: 5%;" onclick="sendComplaint()">Send Complaint</button>
+                                </div>
+                            </li>
+                          </ul>
+                        </div>
+                        <!-- End of form -->
+                    </div>
+                </div>
+              </div>
+              <!-- working complaint tab -->
+              <div class="page-content tab" id="working-complaint-tab">
+                <div class="block">
+                  <div id="working-complaint-content">
+                    <!-- take a look at setWorkingComplaint() function -->
+                  </div>
+                </div>
+              </div>
+              <!-- all complaints tab -->
+              <div class="page-content tab" id="all-complaints-tab">
+                <div class="block">
+                    <div id="all-complaint-content">
+                      <!-- take a look at setAllComplaint() function -->
+                    </div>
+                </div>
+              </div>
+              <!-- help/faq  tab -->
+              <div class="page-content tab" id="help-faq-tab">
+                <div class="block">
+                    <div id="help-faq-content">
+
+                    </div>
+                </div>
+              </div>
+              <!-- about tab -->
+              <div class="page-content tab" id="about-tab">
+                <div class="block">
+                    <div id="about-content">
+                      
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    <!-- popup for showing more info of complaint in all complaint section -->
+    <div id="single-complaint-popups">
+      <!-- take alook at addComplaintPopups() function -->
+    </div>
+    <input type="hidden" name="place-imageholder" id="place-imageholder" value="">
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../lib/framework7/js/framework7.bundle.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- main js file -->
+    <script type="text/javascript" src="../js/functions.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        window.setTimeout(function() {
+          document.getElementById('loading-main-page-gif').style.display='none';
+        }, 2000)
+    </script>
+  </body>
+</html>
