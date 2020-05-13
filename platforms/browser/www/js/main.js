@@ -351,7 +351,9 @@ $(document).ready(function(){
         console.log(notification_btn_id)     
         if(notification_btn_id == "notification-menu-btn"){
             $('#notification-context-menu').toggle('slide');
-            $('#notification-context-menu').css("display","flex");                                
+            $('#notification-context-menu').css("display","flex");           
+            // then call api to read all the notifications
+            markReadNotifications(window.localStorage.getItem('uuid'));                     
         }else if(notification_btn_id == "notification-context-menu" || notification_btn_id == "notification-transperent-body"){
             // do nothing
         }else{

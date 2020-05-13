@@ -8,7 +8,7 @@ var app = {
 
     onDeviceReady: function() {   
         // store api_url in localstorage
-        window.localStorage.setItem('API_URL','http://sweeperapi.kshitijskincare.com');
+        window.localStorage.setItem('API_URL','https://kshitijskincare.com/sweeperapi');
         // get uuid and store it in localstorage
         window.localStorage.setItem("uuid",device.uuid);
         // get lat long and store it in localstorage
@@ -161,7 +161,6 @@ function verify(){
 
 // function is to login user
 function login(){
-  $('#loading-gif').css("display","flex");
   // login user
   auth = loginUser();
   if(auth == 'empty'){
@@ -169,6 +168,7 @@ function login(){
   }else if(auth == 'email'){
     appAlert('Invalid email-id format','Warning!!','Ok');
   }else if(typeof(auth) == 'object'){
+    $('#loading-gif').css("display","flex");
     // first get uuid from localstorage
     var uuid = window.localStorage.getItem('uuid');
     // send post request to login the user
