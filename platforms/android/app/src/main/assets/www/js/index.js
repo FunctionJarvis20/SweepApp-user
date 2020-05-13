@@ -7,6 +7,8 @@ var app = {
     },
 
     onDeviceReady: function() {   
+        // store api_url in localstorage
+        window.localStorage.setItem('API_URL','http://sweeperapi.kshitijskincare.com');
         // get uuid and store it in localstorage
         window.localStorage.setItem("uuid",device.uuid);
         // get lat long and store it in localstorage
@@ -16,7 +18,7 @@ var app = {
         // store lng in localstorage
         window.localStorage.setItem('userlng',position.coords.longitude);
         // get the zones from api
-        $.get('https://sweeperapi.000webhostapp.com/api/zone/readall.php',function(data){
+        $.get(window.localStorage.getItem('API_URL')+'/api/zone/readall.php',function(data){
           // zones
             count = data.count;
             // call function to extract zone
@@ -68,13 +70,18 @@ function register(){
     if(uuid == 'null'){
       uuid = Math.random();
     }
+    // get address from api call
+    $.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${window.localStorage.getItem('userlng')},${window.localStorage.getItem('userlat')}.json?access_token=pk.eyJ1IjoiZnVuY3Rpb25qYXJ2aXMyMCIsImEiOiJjazh0dDV0cWowMXNjM25rMjhuaG42aXdkIn0.-Zx7lvYRHE5PA5gdUV9M9w`,function(result){
+      // store address in localstorage
+      window.localStorage.setItem('address',result.features[0].place_name);
+    });
     // first make api call and then set register == 1 in localstorage
-    $.post('https://sweeperapi.000webhostapp.com/api/user/create.php',{
+    $.post(window.localStorage.getItem('API_URL')+'/api/user/create.php',{
       uuid: uuid,
       name: auth.fullname,
       mobile: auth.mobile,
       email: auth.email,
-      address: 'NAN',
+      address: window.localStorage.getItem('address'),
       adhaar: auth.adhaar,
       location: location,
       password: auth.password,
@@ -110,7 +117,7 @@ function verify(){
     // first get uuid from localstorage
     var uuid = window.localStorage.getItem('uuid');
     // send post request to verify the user
-    $.post('https://sweeperapi.000webhostapp.com/api/user/verify.php',{
+    $.post(window.localStorage.getItem('API_URL')+'/api/user/verify.php',{
       uuid: uuid,
       email: auth.email,
       password: auth.password,
@@ -123,7 +130,7 @@ function verify(){
         window.localStorage.setItem("verify","1");
         // call function to register notificant
         window.plugins.OneSignal.getPermissionSubscriptionState(function(status) {
-          $.get('https://sweeperapi.000webhostapp.com/api/notification_auth/register.php',{
+          $.get(window.localStorage.getItem('API_URL')+'/api/notification_auth/register.php',{
             notifier: 'user',
             uuid: window.localStorage.getItem('uuid'),
             notification_id: status.subscriptionStatus.userId
@@ -165,7 +172,7 @@ function login(){
     // first get uuid from localstorage
     var uuid = window.localStorage.getItem('uuid');
     // send post request to login the user
-    $.post('https://sweeperapi.000webhostapp.com/api/user/login.php',{
+    $.post(window.localStorage.getItem('API_URL')+'/api/user/login.php',{
       uuid: uuid,
       email: auth.email,
       password: auth.password
@@ -182,7 +189,7 @@ function login(){
 
         // call function to register notificant
         window.plugins.OneSignal.getPermissionSubscriptionState(function(status) {
-          $.get('https://sweeperapi.000webhostapp.com/api/notification_auth/register.php',{
+          $.get(window.localStorage.getItem('API_URL')+'/api/notification_auth/register.php',{
             notifier: 'user',
             uuid: window.localStorage.getItem('uuid'),
             notification_id: status.subscriptionStatus.userId

@@ -13,14 +13,14 @@ var app = new Framework7({
 
             // load working complaint on page load
             // api to get working complaint
-            $.get('https://sweeperapi.000webhostapp.com/api/complaint/userworkingcomplaint.php',{
+            $.get(API_URL+'/api/complaint/userworkingcomplaint.php',{
                 user_uuid: window.localStorage.getItem('uuid')
             },function(data,status){
                 if(data.status == 204){
                     setWorkingComplaintError(data.message);
                 }else{
                     // get working status of complaint by making api request
-                    $.get('https://sweeperapi.000webhostapp.com/api/complaint/workingstatus.php',{
+                    $.get(API_URL+'/api/complaint/workingstatus.php',{
                         complaint_id: data.id
                     },function(result,status){
                         if(status == 'success'){
@@ -46,7 +46,7 @@ var app = new Framework7({
             });
 
             // all complaint initial load
-            $.get('https://sweeperapi.000webhostapp.com/api/complaint/getfinishedcomplaints.php',{
+            $.get(API_URL+'/api/complaint/getfinishedcomplaints.php',{
                 user_uuid: window.localStorage.getItem('uuid')
             },function(data,status){
 
@@ -65,7 +65,7 @@ var app = new Framework7({
             });
 
             // get all the zones from database
-            $.get('https://sweeperapi.000webhostapp.com/api/zone/readall.php',function(data){
+            $.get(API_URL+'/api/zone/readall.php',function(data){
                 // zones
                 count = data.count;
                 // call function to extract zone
@@ -73,6 +73,25 @@ var app = new Framework7({
             }).fail(function(error){
                 appAlert('Something went wrong!! please check your internet connection','Failed','Ok');                
             });
+
+             // get user info and store it in localstorage
+             $.get(API_URL+'/api/user/read.php',{
+                uuid: window.localStorage.getItem('uuid')
+            },function(data){
+                // set zone,name,address,email,adhaar in localstorage
+                sweeper_info = {
+                    name: data.data[0].name,
+                    email: data.data[0].email,
+                    adhaar: data.data[0].adhaar,
+                    address: data.data[0].address,
+                    zone: data.data[0].zone
+                }
+                // set sweeper info object
+                window.localStorage.setItem('userinfo',JSON.stringify(sweeper_info));
+            });
+
+            // call an method to get notification initially
+            getNotifications(window.localStorage.getItem('uuid'));
         },
         pageInit: function(){
             
@@ -216,14 +235,18 @@ function sendComplaint(){
 
         options.params = params;
         var ft = new FileTransfer();
-        ft.upload(imageurl, "https://sweeperapi.000webhostapp.com/api/complaint/create.php",
+        ft.upload(imageurl, API_URL+"/api/complaint/create.php",
             function(result) {
                 $('#loading-gif').css("display","none");  
                 var data = JSON.parse(result.response);       
                 if(data.status == 204){
                     appAlert(data.message.toLowerCase(),'Warning!!','Ok');
                 }else if(data.status == 200){ 
+                    // call get admin detail function to get admin details
+                    getAdminDetails(zone);
                     appAlert('Successfully submited the complaint!!','Complaint send','Ok');
+                    // send notification to the admin that for new complaint
+                    createNotificationForAdmin(JSON.parse(window.localStorage.getItem('admininfo')).id,data.complaint_id,'nc');
                 }else{
                     appAlert('Something went wrong','Try Again','Ok');
                 }
@@ -247,14 +270,14 @@ function sendComplaint(){
 // continues fetching of working complaint with interval of 20 seconds
 window.setInterval(function(){
     // api to get working complaint
-    $.get('https://sweeperapi.000webhostapp.com/api/complaint/userworkingcomplaint.php',{
+    $.get(API_URL+'/api/complaint/userworkingcomplaint.php',{
         user_uuid: window.localStorage.getItem('uuid')
     },function(data,status){
         if(data.status == 204){
             setWorkingComplaintError(data.message);            
         }else{
             // get working status of complaint by making api request
-            $.get('https://sweeperapi.000webhostapp.com/api/complaint/workingstatus.php',{
+            $.get(API_URL+'/api/complaint/workingstatus.php',{
                 complaint_id: data.id
             },function(result,status){
                 if(status == 'success'){
@@ -283,7 +306,7 @@ window.setInterval(function(){
 // continues fetching of all complaints in interval of 1 minute
 window.setInterval(function(){
  // all complaint initial load
-    $.get('https://sweeperapi.000webhostapp.com/api/complaint/getfinishedcomplaints.php',{
+    $.get(API_URL+'/api/complaint/getfinishedcomplaints.php',{
         user_uuid: window.localStorage.getItem('uuid')
     },function(data,status){
 
@@ -302,6 +325,23 @@ window.setInterval(function(){
     });
 },60000)
 
+// set interval to get the notifications constantly
+window.setInterval(function(){
+    // call an method 
+    getNotifications(window.localStorage.getItem('uuid'));
+},3000);
+// this is to get the confirmation to close the app
+document.addEventListener("backbutton", function(e){
+    navigator.notification.confirm("Are you sure you want to exit the application?",exitSweeperApp,"Warning!!","Ok,Cancel");
+}, false); 
+
+function exitSweeperApp(button) {
+    if(button == 1) {
+        navigator.app.exitApp();
+    } else {
+        return;
+    }                     
+ }
 
 //  click to open notification menu
 $(document).ready(function(){
@@ -311,7 +351,9 @@ $(document).ready(function(){
         console.log(notification_btn_id)     
         if(notification_btn_id == "notification-menu-btn"){
             $('#notification-context-menu').toggle('slide');
-            $('#notification-context-menu').css("display","flex");                                
+            $('#notification-context-menu').css("display","flex");           
+            // then call api to read all the notifications
+            markReadNotifications(window.localStorage.getItem('uuid'));                     
         }else if(notification_btn_id == "notification-context-menu" || notification_btn_id == "notification-transperent-body"){
             // do nothing
         }else{

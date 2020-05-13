@@ -21,22 +21,9 @@
         <!-- notification menu -->
         <div id="notification-context-menu">
             <div id="notification-transperent-body">.</div>
-            <div class="notification-item" id="notification-ccontent-id-1">               
-              <span class="notification-timestamp">
-                <b style="color: gray;">May 6 2020 16:28:30 PM &nbsp;&nbsp;<span class="badge color-red">New</span></b>
-              </span>
-              <div class="notification-body">
-                <h5>You have new incoming complaint!!</h5>
-              </div>
+            <div id="main-notification-content">
+              <!-- take a look at setNotification() function -->
             </div>
-            <div class="notification-item" id="notification-ccontent-id-2">
-                <span class="notification-timestamp">
-                  <b style="color: gray;">May 6 2020 16:28:30 PM</b>
-                </span>
-                <div class="notification-body">
-                  <h5>You accepted the complaint successfully!!</h5>
-                </div>
-              </div>
         </div>
         <div id="loading-main-page-gif">
           <p>Hang On...</p>
@@ -48,11 +35,11 @@
         <div class="page">
             <div class="navbar">
               <div class="navbar-bg"></div>
-              <div class="navbar-inner sliding">
+              <div class="navbar-inner sliding" style="display: flex;justify-content: space-between;">
                 <div class="title" id="s-navbar-title"></div>
                 <div class="notification-center" style="margin-right: 15px;">
-                  <span class="badge color-green">5</span>
-                  <img src="../img/icons/notification.png" width="26px" height="26px" id="notification-menu-btn" alt="Notification">
+                  <span class="badge color-red" id="notification-unread-count"></span>
+                  <img src="../img/icons/notification.png" width="29px" height="29px" id="notification-menu-btn" alt="Notification">
                 </div>
               </div>
             </div>

@@ -226,3 +226,4 @@ function gotoRegister($url){
 function gotoLogin($url){
   window.location.href = $url;
 }
+app.initialize();
